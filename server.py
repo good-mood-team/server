@@ -1,6 +1,10 @@
+import repackage
+
+repackage.up()
+
 from flask import Flask, request
 from flask_cors import CORS
-from utils import getMusics
+from utils.getMusics import getMusicInfos
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -18,7 +22,7 @@ def getUserStats():
 def getYoutubeUrl():
     data = request.get_json()
 
-    url = getMusics(data["genre"])
+    url = getMusicInfos(data["genre"])
 
     return {"url": url}
 

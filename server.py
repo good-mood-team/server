@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS
+from utils import getMusics
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -11,6 +12,15 @@ BASE_ROUTE = "/api"
 def getUserStats():
     data = request.get_json()
     return data
+
+
+@app.route(f"{BASE_ROUTE}/getYoutubeUrl", methods=["POST"])
+def getYoutubeUrl():
+    data = request.get_json()
+
+    url = getMusics(data["genre"])
+
+    return {"url": url}
 
 
 if __name__ == "__main__":

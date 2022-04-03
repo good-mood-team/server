@@ -6,7 +6,7 @@ BASE_URL = "https://youtube.googleapis.com/youtube/v3"
 
 
 def getMusicInfos(genre) -> str:
-    r = req.get(f"{BASE_URL}/search?maxResults=3&q={genre}%20instrumental&safeSearch=strict&type=video&key={API_KEY}")
+    r = req.get(f"{BASE_URL}/search?maxResults=2&q={genre}%20instrumental&type=video&key={API_KEY}")
     r = r.json()
 
     rnd = random.randint(0, len(r["items"]) - 1)

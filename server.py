@@ -22,9 +22,18 @@ def getUserStats():
 def getYoutubeUrl():
     data = request.get_json()
 
-    url = getMusicInfos(data["genre"])
+    res = {"tracks": []}
 
-    return {"url": url}
+    for genre in data["genres"]:
+        res["tracks"].append(
+            {
+                "genre": genre,
+                "url": "https://youtube.com/clip/Ugkx5i8TnLeMZdY6w6SYH1xcnn_d2QDrFm2c"
+                # "url": getMusicInfos(genre)
+            }
+        )
+
+    return res
 
 
 if __name__ == "__main__":

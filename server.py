@@ -4,6 +4,7 @@ repackage.up()
 
 from flask import Flask, request
 from flask_cors import CORS
+
 from utils.getMusics import getMusicInfos
 
 app = Flask(__name__)
@@ -24,11 +25,15 @@ def getYoutubeUrl():
 
     res = {"tracks": []}
 
+    import random
+
+    testIds = ["sI2U3zjKeYU", "lB8uQ_zO-o8", "key_vfp10Yw", "iX-QaNzd-0Y", "GCdwKhTtNNw"]
+
     for genre in data["genres"]:
         res["tracks"].append(
             {
                 "genre": genre,
-                "url": "https://youtube.com/clip/Ugkx5i8TnLeMZdY6w6SYH1xcnn_d2QDrFm2c"
+                "videoId": testIds[random.randint(0, len(testIds) - 1)]
                 # "url": getMusicInfos(genre)
             }
         )
@@ -38,3 +43,4 @@ def getYoutubeUrl():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    # app.run(debug=True, host="192.168.86.53", ssl_context="adhoc")

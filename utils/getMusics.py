@@ -14,9 +14,4 @@ def getMusicInfos(genre) -> str:
 
     videoId = item["id"]["videoId"]
 
-    videoURL = f"https://youtu.be/{videoId}?t=30"
-    return videoURL
-
-
-if __name__ == "__main__":
-    print("The link to your video is :", getMusicInfos("lofi"))
+    return videoId

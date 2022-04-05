@@ -34,7 +34,7 @@ def getYoutubeUrl():
             {
                 "genre": genre,
                 "videoId": testIds[random.randint(0, len(testIds) - 1)]
-                # "url": getMusicInfos(genre)
+                # "videoId": getMusicInfos(genre)
             }
         )
 
@@ -43,4 +43,4 @@ def getYoutubeUrl():
 
 if __name__ == "__main__":
     app.run(debug=True)
-    # app.run(debug=True, host="192.168.86.53", ssl_context="adhoc")
+    # app.run(debug=True, host="192.168.86.53", ssl_context=("./keys/cert.pem", "./keys/key.pem"))

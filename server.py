@@ -6,21 +6,27 @@ from flask import Flask, request
 from flask_cors import CORS
 
 from utils.getMusics import getMusicInfos
+from model.model import run_model, init_emotion
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
+
+init_emotion(model="./model/emotion-ferplus-8.onnx")
 
 BASE_ROUTE = "/api"
 
 
 @app.route(f"{BASE_ROUTE}/getUserStats", methods=["POST"])
-def getUserStats():
+def getUserStats() -> dict:
     data = request.get_json()
-    return data
+
+    res = run_model(data)
+
+    return res
 
 
 @app.route(f"{BASE_ROUTE}/getYoutubeUrl", methods=["POST"])
-def getYoutubeUrl():
+def getYoutubeUrl() -> dict:
     data = request.get_json()
 
     res = {"tracks": []}
@@ -34,7 +40,7 @@ def getYoutubeUrl():
             {
                 "genre": genre,
                 "videoId": testIds[random.randint(0, len(testIds) - 1)]
-                # "videoId": getMusicInfos(genre)
+                # "videoId": getMusicInfos(genre),
             }
         )
 

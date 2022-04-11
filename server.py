@@ -9,6 +9,7 @@ from utils.getMusics import getMusicInfos
 from model.model import run_model, init_emotion
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 100000000000
 CORS(app, support_credentials=True)
 
 init_emotion(model="./model/emotion-ferplus-8.onnx")

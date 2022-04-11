@@ -39,8 +39,8 @@ def getYoutubeUrl() -> dict:
         res["tracks"].append(
             {
                 "genre": genre,
-                "videoId": testIds[random.randint(0, len(testIds) - 1)]
-                # "videoId": getMusicInfos(genre),
+                # "videoId": testIds[random.randint(0, len(testIds) - 1)]
+                "videoId": getMusicInfos(genre),
             }
         )
 

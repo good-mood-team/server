@@ -13,10 +13,8 @@ CORS(app, support_credentials=True)
 
 init_emotion(model="./model/emotion-ferplus-8.onnx")
 
-BASE_ROUTE = "/api"
 
-
-@app.route(f"{BASE_ROUTE}/getUserStats", methods=["POST"])
+@app.route("/getUserStats", methods=["POST"])
 def getUserStats() -> dict:
     data = request.get_json()
 
@@ -25,7 +23,7 @@ def getUserStats() -> dict:
     return res
 
 
-@app.route(f"{BASE_ROUTE}/getYoutubeUrl", methods=["POST"])
+@app.route("/getYoutubeUrl", methods=["POST"])
 def getYoutubeUrl() -> dict:
     data = request.get_json()
 
@@ -49,4 +47,3 @@ def getYoutubeUrl() -> dict:
 
 if __name__ == "__main__":
     app.run(debug=True)
-    # app.run(debug=True, host="192.168.86.53", ssl_context=("./keys/cert.pem", "./keys/key.pem"))

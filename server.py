@@ -9,11 +9,27 @@ from utils.getMusics import getMusicInfos
 from model.model import run_model, init_emotion
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 100000000000
 CORS(app, support_credentials=True)
 
 init_emotion(model="./model/emotion-ferplus-8.onnx")
 
+
+@app.before_request
+def handle_chunking():
+    """
+    Sets the "wsgi.input_terminated" environment flag, thus enabling
+    Werkzeug to pass chunked requests as streams.  The gunicorn server
+    should set this, but it's not yet been implemented.
+    """
+
+    transfer_encoding = request.headers.get("Transfer-Encoding", None)
+    if transfer_encoding == u"chunked":
+        request.environ["wsgi.input_terminated"] = True
+
+
+@app.route("/", methods=["GET"])
+def index() -> str:
+    return "Hello World!"
 
 @app.route("/getUserStats", methods=["POST"])
 def getUserStats() -> dict:

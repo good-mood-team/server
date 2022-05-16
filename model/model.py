@@ -1,5 +1,4 @@
 import cv2
-from cv2 import mean
 import matplotlib.pyplot as plt
 import bleedfacedetector as fd
 import base64

@@ -10,7 +10,7 @@ def init_emotion(model="./emotion-ferplus-8.onnx") -> None:
     global net, emotions
 
     # Define the emotions
-    emotions = ["Neutral", "Happy", "Surprise", "Sad", "Anger"]
+    emotions = ["Neutral", "Happy", "Sad", "Anger"]
 
     # Initialize the DNN module
     net = cv2.dnn.readNetFromONNX(model)
@@ -86,16 +86,19 @@ def run_model(data):
 
             emoProbs = emotion(img)
 
-            if not any(emoProbs):
+            try:
+                if not any(emoProbs):
+                    continue
+
+                lenght += 1
+
+                for emoProb, emo in zip(emoProbs, emotions):
+                    if emo in meanProbs:
+                        meanProbs[emo] += emoProb
+                    else:
+                        meanProbs[emo] = emoProb
+            except:
                 continue
-
-            lenght += 1
-
-            for emoProb, emo in zip(emoProbs, emotions):
-                if emo in meanProbs:
-                    meanProbs[emo] += emoProb
-                else:
-                    meanProbs[emo] = emoProb
 
         for emo in meanProbs:
             res[genre][emo] = round(meanProbs[emo] / lenght, 2)

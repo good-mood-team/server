@@ -1,3 +1,7 @@
+import os
+import sys
+import json
+
 import repackage
 
 repackage.up()
@@ -12,6 +16,14 @@ app = Flask(__name__)
 CORS(app, support_credentials=True)
 
 init_emotion(model="./model/emotion-ferplus-8.onnx")
+
+if not os.path.isfile("credentials.json"):
+    sys.exit("'credentials.json' not found! Please add it and try again.")
+else:
+    with open("credentials.json") as file:
+        credentials = json.load(file)
+
+API_KEY = credentials["API_KEY"]
 
 
 @app.route("/", methods=["GET"])
@@ -39,7 +51,7 @@ def getYoutubeUrl() -> dict:
         res["tracks"].append(
             {
                 "genre": genre,
-                "videoId": getMusicInfos(genre),
+                "videoId": getMusicInfos(genre, API_KEY),
             }
         )
 

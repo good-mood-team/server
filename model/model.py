@@ -31,35 +31,37 @@ def emotion(image) -> dict:
 
     # Iterate process for all detected faces
     for x, y, w, h in faces:
+        try:
+            # Get the Face from image
+            face = img_copy[y - padding : y + h + padding, x - padding : x + w + padding]
 
-        # Get the Face from image
-        face = img_copy[y - padding : y + h + padding, x - padding : x + w + padding]
+            # Convert the detected face from BGR to Gray scale
+            gray = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
 
-        # Convert the detected face from BGR to Gray scale
-        gray = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+            # Resize the gray scale image into 64x64
+            resized_face = cv2.resize(gray, (64, 64))
 
-        # Resize the gray scale image into 64x64
-        resized_face = cv2.resize(gray, (64, 64))
+            # Reshape the final image in required format of model
+            processed_face = resized_face.reshape(1, 1, 64, 64)
 
-        # Reshape the final image in required format of model
-        processed_face = resized_face.reshape(1, 1, 64, 64)
+            # Input the processed image
+            net.setInput(processed_face)
 
-        # Input the processed image
-        net.setInput(processed_face)
+            # Forward pass
+            Output = net.forward()
 
-        # Forward pass
-        Output = net.forward()
+            # Compute softmax values for each sets of scores
+            expanded = np.exp(Output - np.max(Output))
+            probablities = expanded / expanded.sum()
 
-        # Compute softmax values for each sets of scores
-        expanded = np.exp(Output - np.max(Output))
-        probablities = expanded / expanded.sum()
+            # Get the final probablities by getting rid of any extra dimensions
+            prob = np.squeeze(probablities)
 
-        # Get the final probablities by getting rid of any extra dimensions
-        prob = np.squeeze(probablities)
+            percentage = np.multiply(prob, 100)
 
-        percentage = np.multiply(prob, 100)
-
-        return percentage
+            return percentage
+        except:
+            pass
 
 
 def run_model(data):
@@ -74,6 +76,9 @@ def run_model(data):
         lenght = 0
 
         for screen in data[genre]:
+            if not screen:
+                continue
+
             screen_base64 = screen.replace("data:image/jpeg;base64,", "")
             decoded_data = base64.b64decode(screen_base64)
             np_data = np.frombuffer(decoded_data, np.uint8)

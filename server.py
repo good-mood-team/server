@@ -1,8 +1,11 @@
 import os
 import sys
 import json
+from unittest import result
 
 import repackage
+
+from db.api import add_results, connect
 
 repackage.up()
 
@@ -25,6 +28,9 @@ else:
 
 API_KEY = credentials["API_KEY"]
 
+conn = connect(host="localhost")
+db = conn.gm
+
 
 @app.route("/", methods=["GET"])
 def index() -> str:
@@ -33,30 +39,41 @@ def index() -> str:
 
 @app.route("/getUserStats", methods=["POST"])
 def getUserStats() -> dict:
+    req = request.get_json()
 
-    data = request.get_json()
+    res = run_model(req["results"])
 
-    res = run_model(data)
+    payload = {**req, "results": res}
 
-    return {"payload_size": f"{request.content_length / 10**6} Mb", "emotions": res}
+    if res:
+        add_results(db, payload)
+
+    return {"payload_size": f"{request.content_length / 10**6} Mb", "emotions": res, "genre": req["genre"]}
 
 
 @app.route("/getYoutubeUrl", methods=["POST"])
 def getYoutubeUrl() -> dict:
-    data = request.get_json()
+    req = request.get_json()
 
     res = {"tracks": []}
 
-    for genre in data["genres"]:
+    videoId = None
+
+    for genre in req["genres"]:
+        videoId = getMusicInfos(genre, API_KEY)
+
         res["tracks"].append(
             {
                 "genre": genre,
-                "videoId": "Ux5cQbO_ybw"
-                # "videoId": getMusicInfos(genre, API_KEY),
+                "videoId": videoId,
             }
         )
 
-    return res
+    if videoId:
+        return res
+    else:
+        res = {"status": 114, "message": "API rate limit has been exceeded."}
+        return res
 
 
 if __name__ == "__main__":

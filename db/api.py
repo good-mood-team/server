@@ -14,36 +14,38 @@ def connect(host="localhost", port=27017) -> dict:
         raise Exception("Could not connect to MongoDB...")
 
 
-def add_user(db, payload) -> int:
+def add_results(db, payload) -> int:
     """
-    Adds a user to the database
+    Adds a results to the database
     :param db: The database instance.
     :param payload: The informations about the user (age, gender) + results.
     """
     ts = datetime.datetime.now().timestamp()
 
     try:
-        if payload["age"] and payload["gender"]:
-            if payload["gender"] == 1:
-
+        if payload["age"] and payload["gender"] and payload["results"]:
+            if int(payload["gender"]) == 1:
                 gender = "MALE"
 
-            elif payload["gender"] == 2:
-
+            elif int(payload["gender"]) == 2:
                 gender = "FEMALE"
 
-            elif payload["gender"] == 3:
-
-                gender = "OTHER / UNSPECIFIED"
+            elif int(payload["gender"]) == 3:
+                gender = "OTHER"
 
             for genre in payload["results"]:
-
-                db.user.insert_one(
-                    {"age": payload["age"], "gender": gender, "genre": genre, "results": payload["results"][genre], "created_at": ts})
+                db.users.insert_one(
+                    {
+                        "age": payload["age"],
+                        "gender": gender,
+                        "genre": genre,
+                        "results": payload["results"][genre],
+                        "created_at": ts,
+                    }
+                )
 
         else:
-
-            return {"status": 400, "message": "Payload should not be null."}
+            return {"status": 400, "message": "A value in the payload is null."}
 
         return {"status": 200, "message": "Successfully added results to the database."}
 

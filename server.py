@@ -55,12 +55,16 @@ def getUserStats() -> dict:
 def getYoutubeUrl() -> dict:
     req = request.get_json()
 
-    res = {"tracks": []}
+    res = {"status": 200, "tracks": []}
 
     videoId = None
+    # videoId = "U-Z_bZS8t3M"
 
     for genre in req["genres"]:
-        videoId = getMusicInfos(genre, API_KEY)
+        try:
+            videoId = getMusicInfos(genre, API_KEY)
+        except:
+            return {"status": 114, "message": "API rate limit has been exceeded."}
 
         res["tracks"].append(
             {
@@ -69,12 +73,8 @@ def getYoutubeUrl() -> dict:
             }
         )
 
-    if videoId:
-        return res
-    else:
-        res = {"status": 114, "message": "API rate limit has been exceeded."}
-        return res
+    return res
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)

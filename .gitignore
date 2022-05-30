@@ -1,4 +1,4 @@
 ./__pycache__
 */__pycache__
-./start.sh
-./credentials.json
+start.sh
+credentials.json
